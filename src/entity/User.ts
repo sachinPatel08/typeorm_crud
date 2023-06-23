@@ -26,7 +26,7 @@ export class User {
     @Column({nullable:false})
     mobileNumber: string
 
-    @Column({nullable:false})
+    @Column({nullable:true})
     activationTOken: string
 
     @Column({default:"male"})

@@ -56,4 +56,25 @@ const getAllPost = async (req, res) =>{
 
 }
 
-module.exports = {createPost , getAllPost}
+const getPostWithComment = async (req, res) => {
+
+  try {
+    
+    // const data = await getRepository(Post).createQueryBuilder("post").leftJoinAndSelect('post.comment','comment')
+    const data = await getRepository(User).createQueryBuilder('user').leftJoinAndSelect('user.post','post').leftJoinAndSelect('post.comment', 'comment')
+    const result = await data.getMany()
+    console.log(result);
+   
+    return res.json(result)
+
+  } catch (error) {
+    if(error instanceof Error){
+      return res.status(404).json({ message: error.message });
+    }
+  }
+
+  
+
+}
+
+module.exports = {createPost , getAllPost , getPostWithComment}

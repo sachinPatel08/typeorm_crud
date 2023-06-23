@@ -3,6 +3,7 @@ const { Session } = require('../entity/Session')
 const { getRepository } = require('typeorm');
 import { getManager } from 'typeorm';
 const jwt = require("jsonwebtoken");
+const {activeToken} = require('../utils/refToken')
 
 interface Login {
     email:string;
@@ -15,7 +16,7 @@ interface userReg {
   age:number;
   email:string;
   mobileNumber:string;
-  activationTOken:string;
+  activationTOken?:string;
   password:string;
   gender?:string;
 }
@@ -23,6 +24,8 @@ interface userReg {
     try {
         const userRepository = getRepository(User);
         const users = await userRepository.find();
+        console.log(users);
+        
         return res.json(users);
       } catch (error) {
         if (error instanceof Error) {
@@ -32,20 +35,38 @@ interface userReg {
 }
 
 const createUser = async ( req , res)=>{
-    const {firstName , lastName , age , email , mobileNumber , activationTOken , password , gender} : userReg = req.body
+    const {firstName , lastName , age , email , mobileNumber , password , gender} : userReg = req.body
     
     const userRepository = await getRepository(User)
     const extUser = await userRepository.findOne({where:{email: email}})
+    const token = activeToken().toString()
+    console.log(token);
     
     if(extUser){
         return res.json({"message":"user already exists"});
     }
 
-    if(firstName == null || lastName == null || email == null || mobileNumber == null || activationTOken == null || password == null ){
+    if(firstName == null || lastName == null || email == null || mobileNumber == null || password == null ){
         return res.json({"error":"yes"})
     }
     try{
-       const user = await userRepository.save({firstName , lastName , age , email , mobileNumber , activationTOken , gender , password})
+
+      // const check = userRepository.createQueryBuilder('user').where("user.activationTOken= :activationTOken",{activationTOken:token})
+      // const yes = check.getMany()
+      
+
+      const data = new User()
+      data.firstName = firstName;
+      data.lastName = lastName;
+      data.age = age;
+      data.email = email;
+      data.mobileNumber = mobileNumber;
+      data.activationTOken = token;
+      data.gender = gender;
+      data.password = password;
+
+      //  const user = await userRepository.save({firstName , lastName , age , email , mobileNumber , token , gender , password})
+      const user = await userRepository.save(data)
 
        if(user){
         return res.json({"success": "user successfully created"})
@@ -108,6 +129,11 @@ const login = async (req, res , next) => {
 
 }
 
+const getUserById = async (req, res) => {
+  res.send("user")
+
+}
+
 const logout = async (req , res)=>{
    const sessionRepository = getRepository(Session)
    const token = req.headers.authorization.split(" ")[1] 
@@ -131,4 +157,7 @@ const logout = async (req , res)=>{
     }
 }
 
-module.exports =  {getUser , createUser , login , logout}
+
+
+
+module.exports =  {getUser , createUser , login , logout, getUserById }

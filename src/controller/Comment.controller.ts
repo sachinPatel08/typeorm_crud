@@ -48,7 +48,7 @@ const postComment = async (req, res) => {
      
 }
 
-const getCommentByPost = async (req, res) => {
+const getCommentByPost = async (req, res) : Promise<void> => {
    
    
     try {

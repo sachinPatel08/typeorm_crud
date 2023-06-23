@@ -10,13 +10,14 @@ route.get('/api/users',auth,user.getUser)
 route.post('/api/users',user.createUser)
 route.post('/api/users/login',user.login)
 route.delete('/api/users/logout',auth,user.logout)
+route.get('/api/users/all/:id',auth , user.getUserById)
 
 route.post('/api/users/post',auth,post.createPost)
+route.get('/api/users/postWithUseraAndComment',auth , post.getPostWithComment)
+route.get('/api/users/post',auth , post.getAllPost)
 
 route.post('/api/users/comment' , auth , comment.postComment)
 route.get('/api/users/comment/:id',auth,comment.getCommentByPost)
-
-route.get('/api/users/post',auth , post.getAllPost)
 
 
 module.exports = route;

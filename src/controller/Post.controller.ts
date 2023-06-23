@@ -40,4 +40,20 @@ const createPost = async (req, res) => {
    }
 }
 
-module.exports = {createPost}
+const getAllPost = async (req, res) =>{
+
+  const postRepository = getRepository(Post)
+  
+  try {
+    const data = await postRepository.find()
+
+    return res.json(data)
+  } catch (error) {
+    if(error instanceof Error) {
+      return res.status(404).json({ message: error.message });
+    }
+  }
+
+}
+
+module.exports = {createPost , getAllPost}

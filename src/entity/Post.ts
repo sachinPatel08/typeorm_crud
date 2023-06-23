@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn , ManyToMany, OneToMany  } from "typeorm"
 import { User } from "./User"
+import { Comment } from "./Comment"
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn("uuid")
@@ -16,6 +17,9 @@ export class Post {
         onUpdate: 'CASCADE',
     })
     user : User
+
+    @OneToMany(()=>Comment , (comment)=>comment.post)
+    comment : Comment[]
 
     @CreateDateColumn()
     createdAt: Date;

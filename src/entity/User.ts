@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany, Unique, OneToOne, JoinColumn } from "typeorm"
 import { Post } from "./Post"
 import { Session } from '../entity/Session'
+import { Comment } from "./Comment"
 @Entity('user')
 export class User {
 
@@ -36,6 +37,9 @@ export class User {
 
     @OneToOne(()=> Session, (session)=> session.user)
     session: Session
+
+    @OneToMany(()=>Comment , (comment)=> comment.user)
+    comment: Comment[];
 
     @CreateDateColumn()
     createdAt: Date;

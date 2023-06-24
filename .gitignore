@@ -5,4 +5,8 @@ build/
 tmp/
 temp/
 .env
-src/utils/email_cred.ts
+# Ignore all files in the utils folder
+utils/**
+
+# But do include the email_cred.ts file
+utils/email_cred.ts

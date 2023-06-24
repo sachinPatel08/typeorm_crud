@@ -4,9 +4,7 @@ node_modules/
 build/
 tmp/
 temp/
+/dist/
 .env
-# Ignore all files in the utils folder
-utils/**
 
-# But do include the email_cred.ts file
-utils/email_cred.ts
+src/**

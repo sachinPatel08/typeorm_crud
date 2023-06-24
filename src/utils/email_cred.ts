@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config()
+dotenv.load()
 module.exports = {
-    gmail:"sachinpatel.19.cs@iite.indusuni.ac.in",
-    pass:"phlgjqwthsuwziep"
+    gmail:process.env.GMAIL,
+    pass:process.env.GMAIL_PASS
 }

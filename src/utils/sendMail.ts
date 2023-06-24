@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const { gmail , pass } = require('./email_cred')
+
 const sendMail =async ()=>{
   
   let testAccount = await nodemailer.createTestAccount();

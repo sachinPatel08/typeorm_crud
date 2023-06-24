@@ -4,6 +4,10 @@ const { getRepository } = require('typeorm');
 import { getManager } from 'typeorm';
 const jwt = require("jsonwebtoken");
 const {activeToken} = require('../utils/refToken')
+const {sendMail} = require('../utils/sendMail')
+const fs = require('fs');
+const templateContent = fs.readFileSync('src/emailTemplate/activeNewUser.html', 'utf-8');
+
 
 interface Login {
     email:string;
@@ -20,6 +24,8 @@ interface userReg {
   password:string;
   gender?:string;
 }
+
+
  const getUser =  async (req,res)=>{
     try {
         const userRepository = getRepository(User);
@@ -67,15 +73,46 @@ const createUser = async ( req , res)=>{
 
       //  const user = await userRepository.save({firstName , lastName , age , email , mobileNumber , token , gender , password})
       const user = await userRepository.save(data)
-
+      const emailTemp = await templateContent.replace('{{name}}',user.firstName).replace('{{url}}',`http://localhost:3000/v1/api/users/verify/${user.activationTOken}`)
        if(user){
-        return res.json({"success": "user successfully created"})
+        sendMail( `${user.email}` , "Activation mail" , emailTemp)
+        // return res.json({"success": "user successfully created"})
+        return res.json(user)
        }
     }catch(error){
         if(error instanceof Error){
             return res.status(500).json({ message: error.message });
         }
     }
+}
+
+const verifyUser = async ( req , res) =>{
+
+  const userRepository = getRepository(User)
+
+  try {
+
+    const data = await userRepository.findOne({where:{ activationTOken: req.params.id}})
+
+    if(data && data.status === false){
+      data.status = true
+      const user = await userRepository.update(data.id , data)
+      
+      return res.json({message: "your account activated sucessfully!"})
+    }else if(data.status === true){
+      return res.json({message:"already activated"})
+      
+    }else{
+      return res.json({message: "User not found"})
+    }
+    
+  } catch (error) {
+    if(error instanceof Error){
+      return res.status(500).json({message: error.message})
+    }
+  }
+  
+
 }
 
 const login = async (req, res , next) => {
@@ -99,6 +136,8 @@ const login = async (req, res , next) => {
               message: "user not found.",
             })
           );
+    }else if(user && user.status === false){
+  return res.json({message:"please activate your account."})
     }
     }else{
         return res.status(404).json({"message":"password not found"})
@@ -160,4 +199,4 @@ const logout = async (req , res)=>{
 
 
 
-module.exports =  {getUser , createUser , login , logout, getUserById }
+module.exports =  {getUser , createUser , login , logout, getUserById, verifyUser }

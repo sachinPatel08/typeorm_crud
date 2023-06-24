@@ -29,6 +29,9 @@ export class User {
     @Column({nullable:true})
     activationTOken: string
 
+    @Column({ default: false , nullable:true })
+    status: boolean
+
     @Column({default:"male"})
     gender: string
 

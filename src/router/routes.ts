@@ -11,6 +11,7 @@ route.post('/api/users',user.createUser)
 route.post('/api/users/login',user.login)
 route.delete('/api/users/logout',auth,user.logout)
 route.get('/api/users/all/:id',auth , user.getUserById)
+route.get('/api/users/verify/:id', user.verifyUser)
 
 route.post('/api/users/post',auth,post.createPost)
 route.get('/api/users/postWithUseraAndComment',auth , post.getPostWithComment)

@@ -198,5 +198,4 @@ const logout = async (req , res)=>{
 
 
 
-
 module.exports =  {getUser , createUser , login , logout, getUserById, verifyUser }
